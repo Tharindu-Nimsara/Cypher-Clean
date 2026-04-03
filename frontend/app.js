@@ -34,4 +34,19 @@
     return ok ? data : null;
   }
 
+  async function deleteFolder(folder) {
+    return requestJson(`${API_BASE}/delete`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ folder }),
+    });
+  }
+
+  async function describeFolder(folder) {
+    return requestJson(`${API_BASE}/describe`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ folder }),
+    });
+  }
 })();
