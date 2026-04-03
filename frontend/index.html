@@ -1,16 +1,27 @@
 <!doctype html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cypher Clean</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>Hello World!</h1>
+    <main class="container">
+      <section class="hero-panel">
+        <h1>Cypher Clean</h1>
+
+        <div class="controls">
+          <button id="pickFolderBtn">Choose Folder</button>
+          <button id="scanBtn">Scan folders</button>
+        </div>
+
+        <p id="selectedPath">no folder</p>
+        <div class="status-row">
+          <div id="status" class="status-message"></div>
+          <div id="loadingSpinner" class="spinner hidden"></div>
+          <span class="loading-text hidden">Analyzing...</span>
+        </div>
+      </section>
 
     <script src="app.js"></script>
   </body>
 </html>
-
-//gavesh continue with the body of the frontend
