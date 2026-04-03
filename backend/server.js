@@ -2,8 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
-const axios = require("axios");
-
+const { readProjectFiles } = require("./describe");
 const axios = require("axios");
 const { findNodeModules, getFolderSizeBytes, deleteFolder } = require("./scan");
 
