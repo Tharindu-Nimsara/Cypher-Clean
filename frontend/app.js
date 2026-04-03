@@ -173,4 +173,69 @@
       "",
     );
   }
+
+  let selectedRootPath = null;
+  let currentFolders = [];
+  let currentItems = [];
+  let pendingDeleteFolder = null;
+
+  function renderPathCell(pathCell, targetPath, createdAtText, modifiedAtText, modifiedAtIso) {
+    const info = getPathTypeInfo(targetPath);
+    pathCell.innerHTML = "";
+
+    const badge = document.createElement("span");
+    badge.className = `type-badge ${info.className}`;
+    badge.textContent = info.label;
+
+    const pathLine = document.createElement("div");
+    pathLine.className = "path-line";
+    pathLine.textContent = targetPath;
+
+    const metaContainer = document.createElement("div");
+    metaContainer.style.display = "flex";
+    metaContainer.style.gap = "12px";
+    metaContainer.style.marginTop = "4px";
+
+    const createdLine = document.createElement("span");
+    createdLine.className = "meta-line";
+    createdLine.textContent = `Created: ${createdAtText}`;
+
+    const modifiedLine = document.createElement("span");
+    modifiedLine.className = "meta-line";
+    modifiedLine.textContent = `Modified: ${modifiedAtText}`;
+
+    metaContainer.appendChild(createdLine);
+    metaContainer.appendChild(modifiedLine);
+
+    const deleteSafetyScore = calculateDeleteSafetyScore(modifiedAtIso);
+    const deleteSafetyLine = document.createElement("div");
+    deleteSafetyLine.className = "delete-safety-line";
+
+    const deleteSafetyLabelGroup = document.createElement("div");
+    deleteSafetyLabelGroup.className = "delete-safety-label-group";
+
+    const deleteSafetyLabel = document.createElement("span");
+    deleteSafetyLabel.className = "delete-safety-label";
+    deleteSafetyLabel.textContent = "Delete safety";
+
+    const deleteSafetyHint = document.createElement("span");
+    deleteSafetyHint.className = "delete-safety-hint";
+    deleteSafetyHint.textContent = "Based on last modified date";
+
+    deleteSafetyLabelGroup.appendChild(deleteSafetyLabel);
+    deleteSafetyLabelGroup.appendChild(deleteSafetyHint);
+
+    const deleteSafetyValue = document.createElement("span");
+    deleteSafetyValue.className = `delete-safety-value delete-safety-${getDeleteSafetyTone(deleteSafetyScore)}`;
+    deleteSafetyValue.textContent =
+      deleteSafetyScore === null ? "No data found" : `${deleteSafetyScore}%`;
+
+    deleteSafetyLine.appendChild(deleteSafetyLabelGroup);
+    deleteSafetyLine.appendChild(deleteSafetyValue);
+
+    pathCell.appendChild(badge);
+    pathCell.appendChild(pathLine);
+    pathCell.appendChild(metaContainer);
+    pathCell.appendChild(deleteSafetyLine);
+  }
 })();
