@@ -49,4 +49,30 @@
       body: JSON.stringify({ folder }),
     });
   }
+
+  function getPathTypeInfo(targetPath) {
+    const name = targetPath.split(/[\\/]/).pop()?.toLowerCase() || "";
+
+    if (name === "node_modules") {
+      return { key: "node", label: "Node.js Folder", className: "type-node" };
+    }
+
+    if (name === "venv" || name === ".venv") {
+      return { key: "python", label: "Python Folder", className: "type-python"};
+    }
+
+    if (name === ".next") {
+      return { key: "next", label: "Next.js Folder", className: "type-next" };
+    }
+
+    if (name === "target") {
+      return { key: "java", label: "Java Folder", className: "type-java" };
+    }
+
+    if (name.includes(".")) {
+      return { key: "other", label: "File", className: "type-file" };
+    }
+
+    return { key: "other", label: "Folder", className: "type-folder" };
+  }
 })();
