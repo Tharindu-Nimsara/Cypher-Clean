@@ -45,3 +45,93 @@ h1 {
 		0 2px 0 rgba(15, 23, 42, 0.45),
 		0 0 28px rgba(14, 165, 233, 0.26);
 }
+
+.controls {
+	display: flex;
+	gap: 12px;
+	margin-top: 2px;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+}
+
+button {
+	padding: 12px 20px;
+	border: 1px solid rgba(125, 211, 252, 0.35);
+	border-radius: 12px;
+	background: linear-gradient(135deg, rgba(22, 78, 99, 0.94), rgba(8, 47, 73, 0.96));
+	color: #e0f2fe;
+	cursor: pointer;
+	font-size: 16px;
+	font-weight: 600;
+	letter-spacing: 0.01em;
+	transition: all 0.2s ease;
+}
+
+button:hover:not(:disabled) {
+	background: linear-gradient(135deg, rgba(14, 116, 144, 0.96), rgba(8, 62, 94, 0.98));
+	border-color: rgba(186, 230, 253, 0.62);
+	box-shadow: 0 0 16px rgba(14, 165, 233, 0.34);
+	transform: translateY(-1px);
+}
+
+button:active:not(:disabled) {
+	transform: translateY(0) scale(0.98);
+}
+
+button:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+#scanBtn {
+	background: linear-gradient(135deg, rgba(3, 105, 161, 0.95), rgba(30, 64, 175, 0.96));
+}
+
+#scanBtn:hover:not(:disabled) {
+	background: linear-gradient(135deg, rgba(14, 116, 144, 0.98), rgba(30, 58, 138, 0.98));
+}
+
+#selectedPath {
+	margin: 0;
+	color: #dbeafe;
+	font-size: 22px;
+	font-weight: 600;
+	line-height: 1.35;
+	max-width: 100%;
+	word-break: break-word;
+}
+
+.status-message {
+	margin: 0;
+	padding: 0;
+	color: #bfdbfe;
+	min-height: 22px;
+	font-size: 18px;
+	font-weight: 500;
+}
+
+.status-row {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	min-height: 24px;
+	flex-wrap: wrap;
+}
+
+.spinner {
+	display: inline-block;
+	width: 18px;
+	height: 18px;
+	border: 2px solid rgba(125, 211, 252, 0.35);
+	border-top: 2px solid #38bdf8;
+	border-radius: 50%;
+	animation: spin 0.8s linear infinite;
+	margin: 0;
+}
+
+.loading-text {
+	font-size: 14px;
+	color: #93c5fd;
+}
