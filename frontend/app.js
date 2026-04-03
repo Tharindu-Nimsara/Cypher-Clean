@@ -453,4 +453,9 @@
     descriptionModal.classList.remove("hidden");
     showLoading(false);
   }
+
+  function hideDescriptionModal() {
+    descriptionModal.classList.add("hidden");
+    descriptionBody.textContent = "";
+  }
 })();
