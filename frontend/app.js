@@ -458,4 +458,37 @@
     descriptionModal.classList.add("hidden");
     descriptionBody.textContent = "";
   }
+
+  function renderDeleteConfirmModal(folder) {
+    clearElement(deleteConfirmBody);
+
+    const warningTitle = document.createElement("p");
+    warningTitle.className = "delete-confirm-title";
+    warningTitle.textContent = "Permanently delete this folder?";
+
+    const warningText = document.createElement("p");
+    warningText.className = "delete-confirm-text";
+    warningText.textContent =
+      "This action cannot be undone. All files within this folder will be permanently removed. Are you sure you wish to proceed?";
+
+    const pathText = document.createElement("div");
+    pathText.className = "delete-confirm-path";
+    pathText.textContent = folder;
+
+    deleteConfirmBody.appendChild(warningTitle);
+    deleteConfirmBody.appendChild(warningText);
+    deleteConfirmBody.appendChild(pathText);
+  }
+
+  function showDeleteConfirmModal(folder) {
+    pendingDeleteFolder = folder;
+    renderDeleteConfirmModal(folder);
+    deleteConfirmModal.classList.remove("hidden");
+  }
+
+  function hideDeleteConfirmModal() {
+    pendingDeleteFolder = null;
+    deleteConfirmModal.classList.add("hidden");
+    deleteConfirmBody.textContent = "";
+  }
 })();
