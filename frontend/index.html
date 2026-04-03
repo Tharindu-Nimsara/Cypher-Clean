@@ -22,6 +22,37 @@
         </div>
       </section>
 
+      <div id="resultControls" class="result-controls hidden">
+        <div class="filter-group">
+          <span>Filter:</span>
+          <label>
+            <input type="checkbox" class="type-filter" value="node" checked />
+            Node
+          </label>
+          <label>
+            <input type="checkbox" class="type-filter" value="python" checked />
+            Python
+          </label>
+          <label>
+            <input type="checkbox" class="type-filter" value="java" checked />
+            Java
+          </label>
+            
+          <label>
+            <input type="checkbox" class="type-filter" value="next" checked />
+            Next
+          </label>
+        </div>
+        <div class="sort-group">
+          <label for="sortBy">Sort:</label>
+          <select id="sortBy">
+            <option value="">No sorting</option>
+            <option value="size_desc">Size (largest first)</option>
+            <option value="created_asc">Created (oldest first)</option>
+            <option value="modified_asc">Modified (oldest first)</option>
+          </select>
+        </div>
+      </div>
     <script src="app.js"></script>
   </body>
 </html>
