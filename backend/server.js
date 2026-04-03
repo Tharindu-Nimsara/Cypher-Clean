@@ -108,6 +108,59 @@ async function getInstalledModelNames() {
   }
 }
 
+function buildModelCandidates(installedModels, requestedModel) {
+  const preferred = [
+    normalizeModelName(requestedModel),
+    normalizeModelName(process.env.OLLAMA_MODEL),
+    "llama3.1:latest",
+    "deepseek-r1:1.5b",
+    "llama3.2",
+  ].filter(Boolean);
+
+  const installedSet = new Set(installedModels);
+  const ordered = [];
+
+  for (const name of preferred) {
+    if (installedSet.has(name) && !ordered.includes(name)) {
+      ordered.push(name);
+    }
+  }
+
+  for (const name of installedModels) {
+    if (!ordered.includes(name)) {
+      ordered.push(name);
+    }
+  }
+
+  if (!ordered.length && preferred.length) {
+    return preferred;
+  }
+
+  return ordered;
+}
+
+async function generateWithModel(model, prompt, forceCpu = false) {
+  const payload = {
+    model,
+    stream: false,
+    prompt,
+  };
+
+  if (forceCpu) {
+    payload.options = { num_gpu: 0 };
+  }
+
+  const aiRes = await axios.post(
+    "http://localhost:11434/api/generate",
+    payload,
+    { timeout: 120000 },
+  );
+
+  return aiRes.data.response;
+}
+
+
+
 app.get("/scan", async (req, res) => {
   const selectedPath = req.query.path;
   const scanRoot =
