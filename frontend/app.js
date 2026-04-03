@@ -89,4 +89,26 @@
     const value = bytes / 1024 ** idx;
     return `${value.toFixed(idx === 0 ? 0 : 2)} ${units[idx]}`;
   }
+
+  function formatDate(isoString) {
+    if (!isoString) {
+      return "Unknown";
+    }
+
+    const date = new Date(isoString);
+    if (Number.isNaN(date.getTime())) {
+      return "Unknown";
+    }
+
+    return date.toLocaleDateString();
+  }
+
+  function toTimeValue(isoString) {
+    if (!isoString) {
+      return Number.NEGATIVE_INFINITY;
+    }
+
+    const value = new Date(isoString).getTime();
+    return Number.isNaN(value) ? Number.NEGATIVE_INFINITY : value;
+  }
 })();
