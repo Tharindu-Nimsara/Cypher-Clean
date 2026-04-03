@@ -238,4 +238,32 @@
     pathCell.appendChild(metaContainer);
     pathCell.appendChild(deleteSafetyLine);
   }
+
+  function setStatus(message) {
+    statusText.textContent = message;
+  }
+
+  function clearElement(element) {
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
+  }
+
+  function createInfoCard(label, value, className = "") {
+    const card = document.createElement("div");
+    card.className = `analysis-card ${className}`.trim();
+
+    const cardLabel = document.createElement("span");
+    cardLabel.className = "analysis-card-label";
+    cardLabel.textContent = label;
+
+    const cardValue = document.createElement("div");
+    cardValue.className = "analysis-card-value";
+    cardValue.textContent = value || "No data found";
+
+    card.appendChild(cardLabel);
+    card.appendChild(cardValue);
+
+    return card;
+  }
 })();
