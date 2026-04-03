@@ -32,5 +32,46 @@ async function findNodeModules(root) {
 
   await scan(root);
   return results;
-  
+
 }
+
+function getFolderSizeBytes(folderPath) {
+  let total = 0;
+
+  function walk(dir) {
+    let entries;
+    try {
+      entries = fs.readdirSync(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+
+      if (entry.isDirectory()) {
+        walk(fullPath);
+      } else {
+        try {
+          total += fs.statSync(fullPath).size;
+        } catch {
+          continue;
+        }
+      }
+    }
+  }
+
+  walk(folderPath);
+  return total;
+}
+
+async function deleteFolder(folderPath) {
+  try {
+    fs.rmSync(folderPath, { recursive: true, force: true });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+module.exports = { findNodeModules, getFolderSizeBytes, deleteFolder };
