@@ -21,3 +21,19 @@ ipcMain.handle("select-folder", async (event) => {
     return null;
   }
 });
+
+ipcMain.handle("open-folder", async (_event, folderPath) => {
+  if (!folderPath || typeof folderPath !== "string") {
+    return { success: false, error: "Missing folder path" };
+  }
+
+  try {
+    const result = await shell.openPath(folderPath);
+    if (result) {
+      return { success: false, error: result };
+    }
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error?.message || "Failed to open folder" };
+  }
+});
