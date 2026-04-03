@@ -37,3 +37,22 @@ ipcMain.handle("open-folder", async (_event, folderPath) => {
     return { success: false, error: error?.message || "Failed to open folder" };
   }
 });
+
+function createWindow() {
+  const win = new BrowserWindow({
+    width: 1000,
+    height: 700,
+    webPreferences: {
+      preload: path.join(__dirname, "frontend/preload.js"),
+      nodeIntegration: false,
+      contextIsolation: true,
+      sandbox: false,
+    },
+  });
+
+  win.loadFile("frontend/index.html");
+}
+
+app.whenReady().then(() => {
+  createWindow();
+});
