@@ -409,4 +409,48 @@
 
     descriptionBody.appendChild(wrapper);
   }
+
+  function showLoading(visible = true) {
+    if (visible) {
+      loadingSpinner.classList.remove("hidden");
+    } else {
+      loadingSpinner.classList.add("hidden");
+    }
+  }
+
+  function showAnalysisLoadingModal() {
+    clearElement(descriptionBody);
+
+    const loadingState = document.createElement("div");
+    loadingState.className = "analysis-loading-state";
+
+    const loadingIcon = document.createElement("div");
+    loadingIcon.className = "spinner analysis-modal-spinner";
+
+    const loadingText = document.createElement("div");
+    loadingText.className = "analysis-loading-text";
+    loadingText.textContent = "Analyzing Project";
+
+    loadingState.appendChild(loadingIcon);
+    loadingState.appendChild(loadingText);
+    descriptionBody.appendChild(loadingState);
+
+    descriptionModal.classList.remove("hidden");
+  }
+
+  function showDescriptionModal(content) {
+    if (content && typeof content === "object") {
+      renderAnalysisModal(content);
+    } else {
+      clearElement(descriptionBody);
+
+      const fallback = document.createElement("div");
+      fallback.className = "analysis-fallback";
+      fallback.textContent = content || "No data found.";
+      descriptionBody.appendChild(fallback);
+    }
+
+    descriptionModal.classList.remove("hidden");
+    showLoading(false);
+  }
 })();
