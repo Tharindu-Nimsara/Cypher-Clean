@@ -323,5 +323,90 @@
 
     return sections.filter((section) => section.body);
   }
-  
+
+  function renderAnalysisModal(data) {
+    clearElement(descriptionBody);
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "analysis-wrap";
+
+    const metaSection = document.createElement("section");
+    metaSection.className = "analysis-section analysis-meta-section";
+
+    const metaTitle = document.createElement("h3");
+    metaTitle.className = "analysis-section-title";
+    metaTitle.textContent = "Project metadata";
+
+    const metaGrid = document.createElement("div");
+    metaGrid.className = "analysis-grid";
+
+    const projectMeta = data?.projectMeta || {};
+    const tagValue =
+      Array.isArray(projectMeta.tags) && projectMeta.tags.length
+        ? projectMeta.tags.join(", ")
+        : null;
+
+    metaGrid.appendChild(
+      createInfoCard("Project name", projectMeta.projectName || null),
+    );
+    metaGrid.appendChild(
+      createInfoCard("Created", formatDate(projectMeta.createdAt)),
+    );
+    metaGrid.appendChild(
+      createInfoCard("Last modified", formatDate(projectMeta.lastModifiedAt)),
+    );
+    metaGrid.appendChild(
+      createInfoCard("Project size", projectMeta.projectSizeReadable || null),
+    );
+    metaGrid.appendChild(createInfoCard("Tags", tagValue));
+
+    if (data?.modelUsed) {
+      metaGrid.appendChild(
+        createInfoCard("Model", data.modelUsed, "analysis-card-accent"),
+      );
+    }
+
+    metaSection.appendChild(metaTitle);
+    metaSection.appendChild(metaGrid);
+
+    const analysisSection = document.createElement("section");
+    analysisSection.className = "analysis-section";
+
+    const analysisTitle = document.createElement("h3");
+    analysisTitle.className = "analysis-section-title";
+    analysisTitle.textContent = "Analysis";
+
+    analysisSection.appendChild(analysisTitle);
+
+    const parsedSections = parseAnalysisSections(data?.description);
+
+    if (parsedSections.length) {
+      for (const section of parsedSections) {
+        const sectionCard = document.createElement("article");
+        sectionCard.className = "analysis-section-card";
+
+        const sectionHeader = document.createElement("h4");
+        sectionHeader.className = "analysis-section-card-title";
+        sectionHeader.textContent = section.title;
+
+        const sectionBody = document.createElement("div");
+        sectionBody.className = "analysis-section-card-body";
+        sectionBody.textContent = section.body || "No summary available.";
+
+        sectionCard.appendChild(sectionHeader);
+        sectionCard.appendChild(sectionBody);
+        analysisSection.appendChild(sectionCard);
+      }
+    } else {
+      const fallback = document.createElement("div");
+      fallback.className = "analysis-fallback";
+      fallback.textContent = "No data found.";
+      analysisSection.appendChild(fallback);
+    }
+
+    wrapper.appendChild(metaSection);
+    wrapper.appendChild(analysisSection);
+
+    descriptionBody.appendChild(wrapper);
+  }
 })();
