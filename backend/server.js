@@ -54,6 +54,61 @@ function formatBytes(bytes) {
   return `${value.toFixed(idx === 0 ? 0 : 2)} ${units[idx]}`;
 }
 
+async function getBestAvailableModel() {
+  const preferred = [
+    process.env.OLLAMA_MODEL,
+    "llama3.1:latest",
+    "deepseek-r1:1.5b",
+    "llama3.2",
+  ].filter(Boolean);
+
+  try {
+    const tagsRes = await axios.get("http://localhost:11434/api/tags", {
+      timeout: 10000,
+    });
+
+    const installed = new Set(
+      (tagsRes.data.models || []).map((model) => model.name),
+    );
+
+    for (const model of preferred) {
+      if (installed.has(model)) {
+        return model;
+      }
+    }
+
+    return tagsRes.data.models?.[0]?.name || null;
+  } catch {
+    return preferred[0] || null;
+  }
+}
+
+function normalizeModelName(name) {
+  return typeof name === "string" ? name.trim() : "";
+}
+
+function isCudaRuntimeFailure(error) {
+  const details =
+    error?.response?.data?.error || error?.message || "Unknown AI failure";
+  return /cuda error|llama runner process has terminated|runner terminated/i.test(
+    details,
+  );
+}
+
+async function getInstalledModelNames() {
+  try {
+    const tagsRes = await axios.get("http://localhost:11434/api/tags", {
+      timeout: 10000,
+    });
+
+    return (tagsRes.data.models || [])
+      .map((model) => model.name)
+      .filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
 app.get("/scan", async (req, res) => {
   const selectedPath = req.query.path;
   const scanRoot =
