@@ -4,6 +4,27 @@
   const selectedPathText = document.getElementById("selectedPath");
   const statusText = document.getElementById("status");
   const loadingSpinner = document.getElementById("loadingSpinner");
+    const resultsTable = document.getElementById("resultsTable");
+  const resultsBody = document.getElementById("results");
+  const resultControls = document.getElementById("resultControls");
+  const sortBySelect = document.getElementById("sortBy");
+  const typeFilterCheckboxes = Array.from(
+    document.querySelectorAll(".type-filter"),
+  );
+  const descriptionModal = document.getElementById("descriptionModal");
+  const descriptionModalOverlay = document.getElementById(
+    "descriptionModalOverlay",
+  );
+  const descriptionBody = document.getElementById("descriptionBody");
+  const closeModal = document.getElementById("closeModal");
+  const modalOkBtn = document.getElementById("modalOkBtn");
+  const deleteConfirmModal = document.getElementById("deleteConfirmModal");
+  const deleteConfirmModalOverlay = document.getElementById("deleteConfirmModalOverlay");
+  const deleteConfirmBody = document.getElementById("deleteConfirmBody");
+  const closeDeleteConfirmModal = document.getElementById("closeDeleteConfirmModal");
+  const deleteConfirmCancelBtn = document.getElementById("deleteConfirmCancelBtn");
+  const deleteConfirmOkBtn = document.getElementById("deleteConfirmOkBtn");
+  const API_BASE = "http://localhost:3001";
 
   async function requestJson(url, options) {
     const res = await fetch(url, options);
