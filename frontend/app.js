@@ -266,4 +266,62 @@
 
     return card;
   }
+
+  function parseAnalysisSections(text) {
+    const sections = [];
+    const lines = String(text || "").split(/\r?\n/);
+    let currentSection = null;
+
+    function pushCurrentSection() {
+      if (!currentSection) {
+        return;
+      }
+
+      sections.push({
+        title: currentSection.title,
+        body: currentSection.bodyLines.join("\n").trim(),
+      });
+      currentSection = null;
+    }
+
+    for (const rawLine of lines) {
+      const line = rawLine.trim();
+
+      if (!line) {
+        if (currentSection) {
+          currentSection.bodyLines.push("");
+        }
+        continue;
+      }
+
+      const match = line.match(/^\s*(\d+)[).]\s*(.+?)(?::\s*(.*))?$/);
+      const headingText = match ? match[2].trim() : "";
+      const bodyText = match ? (match[3] || "").trim() : "";
+
+      if (
+        match &&
+        [
+          "What this project is for",
+          "How it works at a high level",
+          "Main technologies/frameworks",
+        ].includes(headingText)
+      ) {
+        pushCurrentSection();
+        currentSection = {
+          title: headingText,
+          bodyLines: bodyText ? [bodyText] : [],
+        };
+        continue;
+      }
+
+      if (currentSection) {
+        currentSection.bodyLines.push(rawLine.trim());
+      }
+    }
+
+    pushCurrentSection();
+
+    return sections.filter((section) => section.body);
+  }
+  
 })();
