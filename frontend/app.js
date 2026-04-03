@@ -111,4 +111,38 @@
     const value = new Date(isoString).getTime();
     return Number.isNaN(value) ? Number.NEGATIVE_INFINITY : value;
   }
+
+  function calculateDeleteSafetyScore(modifiedAtIso) {
+    const modifiedAt = new Date(modifiedAtIso);
+
+    if (!modifiedAtIso || Number.isNaN(modifiedAt.getTime())) {
+      return null;
+    }
+
+    const daysSinceModified = Math.max(
+      0,
+      (Date.now() - modifiedAt.getTime()) / (1000 * 60 * 60 * 24),
+    );
+
+    return Math.max(
+      0,
+      Math.min(100, Math.round((daysSinceModified / 365) * 100)),
+    );
+  }
+
+  function getDeleteSafetyTone(score) {
+    if (score === null) {
+      return "no-data";
+    }
+
+    if (score >= 70) {
+      return "high";
+    }
+
+    if (score >= 35) {
+      return "medium";
+    }
+
+    return "low";
+  }
 })();
