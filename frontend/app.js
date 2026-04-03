@@ -145,4 +145,11 @@
 
     return "low";
   }
+
+  function toProjectFolder(folderPath) {
+    return folderPath.replace(
+      /[\\/](node_modules|venv|\.venv|\.next|target)$/i,
+      "",
+    );
+  }
 })();
