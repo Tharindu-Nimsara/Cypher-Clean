@@ -81,5 +81,50 @@ app.get("/size", async (req, res) => {
 });
 
 
+app.get("/project-meta", async (req, res) => {
+  const folderPath = req.query.path;
+
+  if (!folderPath || typeof folderPath !== "string") {
+    return res.status(400).json({ error: "Missing path query parameter" });
+  }
+
+  try {
+    const projectRoot = toProjectRoot(folderPath);
+    const stats = fs.statSync(projectRoot);
+
+    return res.json({
+      projectRoot,
+      createdAt: stats.birthtime ? stats.birthtime.toISOString() : null,
+      lastModifiedAt: stats.mtime ? stats.mtime.toISOString() : null,
+    });
+  } catch {
+    return res.status(500).json({ error: "Failed to read project metadata" });
+  }
+});
+
+app.post("/delete", async (req, res) => {
+  const { folder } = req.body;
+
+  if (!folder || typeof folder !== "string") {
+    return res
+      .status(400)
+      .json({ success: false, error: "Missing folder path" });
+  }
+
+  const relative = path.relative(rootPath, folder);
+  const isInsideRoot =
+    relative && !relative.startsWith("..") && !path.isAbsolute(relative);
+
+  if (!isInsideRoot) {
+    return res
+      .status(400)
+      .json({ success: false, error: "Folder is outside selected root" });
+  }
+
+  const ok = await deleteFolder(folder);
+  return res.json({ success: ok });
+});
+
+
 const PORT = 3001;
 app.listen(PORT, () => console.log("Backend running on port", PORT));
