@@ -555,4 +555,13 @@
     return sorted;
   }
 
+  function applyFiltersAndSort() {
+    const selectedTypes = getSelectedTypeKeys();
+    const filtered = currentItems.filter((item) =>
+      selectedTypes.has(item.typeKey),
+    );
+    const sorted = sortItems(filtered);
+    renderResults(sorted);
+    updateItemsCount();
+  }
 })();
