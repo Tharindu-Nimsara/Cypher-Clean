@@ -798,4 +798,34 @@
       setStatus("Failed to open folder.");
     }
   }
+
+  pickFolderBtn.onclick = async () => {
+    let folder = null;
+
+    if (window.electronAPI?.selectFolder) {
+      try {
+        folder = await window.electronAPI.selectFolder();
+      } catch {}
+    }
+
+    if (!folder) {
+      folder = await selectFolderFallback();
+    }
+
+    if (!folder) {
+      setStatus("Folder selection cancelled.");
+      return;
+    }
+
+    selectedRootPath = folder;
+    selectedPathText.textContent = `Selected: ${folder}`;
+    scanBtn.disabled = false;
+    setStatus("Ready to scan.");
+  };
+
+  scanBtn.onclick = runScan;
+  sortBySelect.onchange = applyFiltersAndSort;
+  for (const checkbox of typeFilterCheckboxes) {
+    checkbox.onchange = applyFiltersAndSort;
+  }
 })();
