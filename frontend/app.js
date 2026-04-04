@@ -647,4 +647,117 @@
       resultsBody.appendChild(row);
     }
   }
+
+  async function buildItemStreaming(folders) {
+    const promises = folders.map(async (folder) => {
+      const info = getPathTypeInfo(folder);
+
+      try {
+        const [bytesRaw, projectMeta] = await Promise.all([
+          fetchFolderSize(folder),
+          fetchProjectMeta(folder),
+        ]);
+
+        const bytes = typeof bytesRaw === "number" ? bytesRaw : 0;
+        const item = {
+          path: folder,
+          typeKey: info.key,
+          bytes,
+          bytesAvailable: typeof bytesRaw === "number",
+          createdAtIso: projectMeta?.createdAt || null,
+          modifiedAtIso: projectMeta?.lastModifiedAt || null,
+          createdAtText: formatDate(projectMeta?.createdAt),
+          modifiedAtText: formatDate(projectMeta?.lastModifiedAt),
+        };
+
+        currentItems.push(item);
+        const selectedTypes = getSelectedTypeKeys();
+        if (selectedTypes.has(item.typeKey)) {
+          renderSingleItem(item);
+        }
+        return item;
+      } catch (err) {
+        const item = {
+          path: folder,
+          typeKey: info.key,
+          bytes: 0,
+          bytesAvailable: false,
+          createdAtIso: null,
+          modifiedAtIso: null,
+          createdAtText: "Unknown",
+          modifiedAtText: "Unknown",
+        };
+
+        currentItems.push(item);
+        const selectedTypes = getSelectedTypeKeys();
+        if (selectedTypes.has(item.typeKey)) {
+          renderSingleItem(item);
+        }
+        return item;
+      }
+    });
+
+    await Promise.all(promises);
+  }
+
+  async function runScan() {
+    if (!selectedRootPath) {
+      setStatus("Please choose a folder first.");
+      return;
+    }
+
+    setStatus("Scanning...");
+    showLoading(true);
+    resultControls.classList.add("hidden");
+    resultsBody.innerHTML = "";
+    resultsTable.classList.add("hidden");
+    currentItems = [];
+
+    try {
+      const { ok, data } = await scanFolders(selectedRootPath);
+
+      if (!ok) {
+        setStatus("Scan failed.");
+        showLoading(false);
+        return;
+      }
+
+      currentFolders = Array.isArray(data.folders) ? data.folders : [];
+
+      if (!currentFolders.length) {
+        setStatus("No cleanup folders found.");
+        showLoading(false);
+        return;
+      }
+
+      setStatus("Processing folders...");
+      resultControls.classList.remove("hidden");
+      await buildItemStreaming(currentFolders);
+      updateItemsCount();
+      showLoading(false);
+    } catch {
+      setStatus("Cannot connect to backend. Make sure app is running.");
+      showLoading(false);
+    }
+  }
+
+  async function handleDelete(folder) {
+    setStatus("Deleting folder...");
+
+    try {
+      const { ok, data } = await deleteFolder(folder);
+
+      if (!ok || !data?.success) {
+        setStatus(data.error || "Delete failed.");
+        return;
+      }
+
+      setStatus("Deleted successfully.");
+      currentFolders = currentFolders.filter((item) => item !== folder);
+      currentItems = currentItems.filter((item) => item.path !== folder);
+      applyFiltersAndSort();
+    } catch {
+      setStatus("Delete failed.");
+    }
+  }
 })();
