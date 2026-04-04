@@ -160,6 +160,57 @@ async function generateWithModel(model, prompt, forceCpu = false) {
 }
 
 
+async function generateProjectSummary(prompt, requestedModel) {
+  const installedModels = await getInstalledModelNames();
+  const candidates = buildModelCandidates(installedModels, requestedModel);
+  const attemptErrors = [];
+
+  for (const model of candidates) {
+    try {
+      const response = await generateWithModel(model, prompt, false);
+      return { response, modelUsed: model };
+    } catch (error) {
+      const details =
+        error?.response?.data?.error || error?.message || "Unknown AI failure";
+
+      if (isCudaRuntimeFailure(error)) {
+        try {
+          const response = await generateWithModel(model, prompt, true);
+          return { response, modelUsed: `${model} (CPU fallback)` };
+        } catch (cpuError) {
+          const cpuDetails =
+            cpuError?.response?.data?.error ||
+            cpuError?.message ||
+            "Unknown AI failure";
+          attemptErrors.push(`${model} GPU failed: ${details}`);
+          attemptErrors.push(`${model} CPU fallback failed: ${cpuDetails}`);
+          continue;
+        }
+      }
+
+      attemptErrors.push(`${model} failed: ${details}`);
+    }
+  }
+
+  const fallbackModel = await getBestAvailableModel();
+  if (fallbackModel && !candidates.includes(fallbackModel)) {
+    try {
+      const response = await generateWithModel(fallbackModel, prompt, false);
+      return { response, modelUsed: fallbackModel };
+    } catch (error) {
+      const details =
+        error?.response?.data?.error || error?.message || "Unknown AI failure";
+      attemptErrors.push(`${fallbackModel} failed: ${details}`);
+    }
+  }
+
+  throw new Error(
+    attemptErrors.length
+      ? `All candidate models failed. ${attemptErrors.join(" | ")}`
+      : "No Ollama model available. Pull one first (example: deepseek-r1:1.5b)",
+  );
+}
+
 
 app.get("/scan", async (req, res) => {
   const selectedPath = req.query.path;
