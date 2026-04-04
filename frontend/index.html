@@ -1,16 +1,104 @@
 <!doctype html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cypher Clean</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>Hello World!</h1>
+    <main class="container">
+      <section class="hero-panel">
+        <h1>Cypher Clean</h1>
+
+        <div class="controls">
+          <button id="pickFolderBtn">Choose Folder</button>
+          <button id="scanBtn" disabled>Scan folders</button>
+        </div>
+
+        <p id="selectedPath">No folder selected.</p>
+        <div class="status-row">
+          <div id="status" class="status-message"></div>
+          <div id="loadingSpinner" class="spinner hidden"></div>
+          <span class="loading-text hidden">Analyzing...</span>
+        </div>
+      </section>
+
+      <div id="resultControls" class="result-controls hidden">
+        <div class="filter-group">
+          <span>Filter:</span>
+          <label>
+            <input type="checkbox" class="type-filter" value="node" checked />
+            Node
+          </label>
+          <label>
+            <input type="checkbox" class="type-filter" value="python" checked />
+            Python
+          </label>
+          <label>
+            <input type="checkbox" class="type-filter" value="java" checked />
+            Java
+          </label>
+            
+          <label>
+            <input type="checkbox" class="type-filter" value="next" checked />
+            Next
+          </label>
+        </div>
+        <div class="sort-group">
+          <label for="sortBy">Sort:</label>
+          <select id="sortBy">
+            <option value="">No sorting</option>
+            <option value="size_desc">Size (largest first)</option>
+            <option value="created_asc">Created (oldest first)</option>
+            <option value="modified_asc">Modified (oldest first)</option>
+          </select>
+        </div>
+      </div>
+
+      <table id="resultsTable" class="hidden">
+        <thead>
+          <tr>
+            <th>Path</th>
+            <th>Size</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="results"></tbody>
+      </table>
+    </main>
+
+    <div id="descriptionModal" class="modal hidden">
+      <div id="descriptionModalOverlay" class="modal-overlay"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Project Analysis</h2>
+          <button class="modal-close" id="closeModal">×</button>
+        </div>
+        <div id="descriptionBody" class="modal-body"></div>
+        <div class="modal-footer">
+          <button id="modalOkBtn" class="modal-btn-ok">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="deleteConfirmModal" class="modal hidden">
+      <div id="deleteConfirmModalOverlay" class="modal-overlay"></div>
+      <div class="modal-content delete-confirm-modal">
+        <div class="modal-header delete-confirm-header">
+          <h2>Confirm Deletion</h2>
+          <button class="modal-close" id="closeDeleteConfirmModal">×</button>
+        </div>
+        <div id="deleteConfirmBody" class="modal-body delete-confirm-body"></div>
+        <div class="modal-footer delete-confirm-footer">
+          <button id="deleteConfirmCancelBtn" class="modal-btn-cancel">
+            Cancel
+          </button>
+          <button id="deleteConfirmOkBtn" class="modal-btn-delete">
+            Delete Folder
+          </button>
+        </div>
+      </div>
+    </div>
 
     <script src="app.js"></script>
   </body>
 </html>
-
-//gavesh continue with the body of the frontend
