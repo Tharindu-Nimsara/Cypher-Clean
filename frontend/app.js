@@ -760,4 +760,42 @@
       setStatus("Delete failed.");
     }
   }
+
+  async function describeProject(folder) {
+    setStatus("Analyzing project with AI...");
+    showAnalysisLoadingModal();
+    showLoading(false);
+
+    try {
+      const { ok, data } = await describeFolder(folder);
+
+      if (!ok) {
+        setStatus(data.error || "Error analyzing project.");
+        showDescriptionModal(data.error || "Error analyzing project.");
+        return;
+      }
+
+      showDescriptionModal(data);
+
+      setStatus("Analysis complete.");
+    } catch {
+      setStatus("AI analysis failed. Check backend/Ollama connection.");
+      showDescriptionModal(
+        "AI analysis failed. Check backend/Ollama connection.",
+      );
+    }
+  }
+
+  async function openProjectFolder(folder) {
+    const projectFolder = toProjectFolder(folder);
+
+    try {
+      const result = await window.electronAPI.openFolder(projectFolder);
+      if (!result?.success) {
+        setStatus(result?.error || "Failed to open folder.");
+      }
+    } catch {
+      setStatus("Failed to open folder.");
+    }
+  }
 })();
