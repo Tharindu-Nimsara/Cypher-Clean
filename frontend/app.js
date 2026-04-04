@@ -606,4 +606,45 @@
 
     return row;
   }
+
+  function renderSingleItem(item) {
+    if (resultsTable.classList.contains("hidden")) {
+      resultsTable.classList.remove("hidden");
+      resultControls.classList.remove("hidden");
+    }
+
+    const row = createItemRow(item);
+    resultsBody.appendChild(row);
+    updateItemsCount();
+  }
+
+  function updateItemsCount() {
+    const visibleCount = resultsBody.children.length;
+    if (visibleCount === 0) {
+      resultsTable.classList.add("hidden");
+      setStatus("No matching items for selected filters.");
+    } 
+    else {
+      setStatus(`Showing ${visibleCount} item(s).`);
+    }
+  }
+
+  function renderResults(items) {
+    resultsBody.innerHTML = "";
+
+    if (!items.length) {
+      resultsTable.classList.add("hidden");
+      setStatus("No matching items for selected filters.");
+      return;
+    }
+
+    resultsTable.classList.remove("hidden");
+    resultControls.classList.remove("hidden");
+    setStatus(`Showing ${items.length} item(s).`);
+
+    for (const item of items) {
+      const row = createItemRow(item);
+      resultsBody.appendChild(row);
+    }
+  }
 })();
