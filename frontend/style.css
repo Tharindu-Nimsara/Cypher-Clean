@@ -696,3 +696,33 @@ td {
 	letter-spacing: 0.02em;
 	color: #e0f2fe;
 }
+.modal-body h1,
+.modal-body h2,
+.modal-body h3 {
+	color: #60a5fa;
+	margin: 12px 0 8px 0;
+	font-weight: 600;
+}
+
+.modal-footer {
+	display: flex;
+	justify-content: flex-end;
+	padding: 16px 20px;
+	border-top: 1px solid #334155;
+}
+
+.modal-btn-ok {
+	background: #0366d6;
+	border: 1px solid #058edf;
+	color: #e2e8f0;
+	padding: 10px 24px;
+	border-radius: 8px;
+	cursor: pointer;
+	font-weight: 500;
+	transition: all 0.2s ease;
+}
+
+.modal-btn-ok:hover {
+	background: #0860ca;
+	box-shadow: 0 0 12px rgba(3, 102, 214, 0.4);
+}
