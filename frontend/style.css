@@ -726,3 +726,42 @@ td {
 	background: #0860ca;
 	box-shadow: 0 0 12px rgba(3, 102, 214, 0.4);
 }
+@keyframes heroFadeIn {
+	0% {
+		opacity: 0;
+		transform: translateY(-8px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@media (max-width: 640px) {
+	.container {
+		padding: 0 12px;
+		margin-top: 14px;
+	}
+
+	.hero-panel {
+		padding: 22px 14px 18px;
+		border-radius: 14px;
+	}
+
+	.controls {
+		width: 100%;
+		gap: 10px;
+	}
+
+	button {
+		width: 100%;
+	}
+
+	#selectedPath {
+		font-size: 18px;
+	}
+
+	.status-message {
+		font-size: 16px;
+	}
+}
