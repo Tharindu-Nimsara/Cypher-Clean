@@ -828,4 +828,36 @@
   for (const checkbox of typeFilterCheckboxes) {
     checkbox.onchange = applyFiltersAndSort;
   }
+
+  closeModal.onclick = hideDescriptionModal;
+  modalOkBtn.onclick = hideDescriptionModal;
+  closeDeleteConfirmModal.onclick = hideDeleteConfirmModal;
+  deleteConfirmCancelBtn.onclick = hideDeleteConfirmModal;
+  deleteConfirmOkBtn.onclick = async () => {
+    const folder = pendingDeleteFolder;
+
+    if (!folder) {
+      hideDeleteConfirmModal();
+      return;
+    }
+
+    hideDeleteConfirmModal();
+    await handleDelete(folder);
+  };
+  descriptionModalOverlay.onclick = hideDescriptionModal;
+  deleteConfirmModalOverlay.onclick = hideDeleteConfirmModal;
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !descriptionModal.classList.contains("hidden")) {
+      hideDescriptionModal();
+      return;
+    }
+
+    if (
+      e.key === "Escape" &&
+      !deleteConfirmModal.classList.contains("hidden")
+    ) {
+      hideDeleteConfirmModal();
+    }
+  });
 })();
