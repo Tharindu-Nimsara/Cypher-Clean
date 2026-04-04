@@ -21,8 +21,6 @@ No cloud, no data leakage, just fast, secure, on-device optimization for develop
 
 ## Team Details
 
-Update this section with your official project information:
-
 - Team name: Cypher Sentinel
 - Team members: Tharindu Nimsara (Leader), Anushka Rodrigo, Gavesh Mithila
 - University: University of Sri Jayewardenepura
@@ -149,25 +147,25 @@ project-file/
 
 ## How to Run the Project
 
-1. Install dependencies
-
-```bash
-npm install
-```
-
-2. Start Ollama service (required for AI summary)
-
-```bash
-ollama serve
-```
-
-3. Pull at least one model (if not already available)
+1. Open CMD and Pull at least one AI model (if not already available)
 
 ```bash
 ollama pull deepseek-r1:1.5b
 ```
 
-4. Start the Electron app
+2. Start Ollama service in CMD (required for AI summary)
+
+```bash
+ollama serve
+```
+
+3. In project folder terminal install dependencies
+
+```bash
+npm install
+```
+
+4. In project folder terminal start the Electron app
 
 ```bash
 npm start
