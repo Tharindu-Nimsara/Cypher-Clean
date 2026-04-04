@@ -491,4 +491,29 @@
     deleteConfirmModal.classList.add("hidden");
     deleteConfirmBody.textContent = "";
   }
+  
+  function selectFolderFallback() {
+    return new Promise((resolve) => {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.setAttribute("webkitdirectory", "");
+      input.setAttribute("directory", "");
+      input.style.display = "none";
+
+      input.onchange = () => {
+        const firstFile = input.files && input.files[0];
+        document.body.removeChild(input);
+
+        if (!firstFile?.path) {
+          resolve(null);
+          return;
+        }
+
+        resolve(firstFile.path.replace(/[\\/][^\\/]+$/, ""));
+      };
+
+      document.body.appendChild(input);
+      input.click();
+    });
+  }
 })();
