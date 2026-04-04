@@ -1,6 +1,6 @@
 # Cypher Clean
 
-## Project Demo video: 
+## Project Demo video: https://drive.google.com/file/d/1e_PZ4f3g-UFyXhzwkljuLmxYPdQmRK8f/view?usp=sharing
 
 Cypher Clean is a privacy-first desktop assistant for developers that helps identify and clean auto-generated project folders (such as node_modules, venv, .venv, .next, and target), while also generating local AI-powered project summaries.
 
