@@ -564,4 +564,46 @@
     renderResults(sorted);
     updateItemsCount();
   }
+
+  function createItemRow(item) {
+    const folder = item.path;
+    const row = document.createElement("tr");
+
+    const pathCell = document.createElement("td");
+    renderPathCell(pathCell, folder, item.createdAtText, item.modifiedAtText, item.modifiedAtIso);
+
+    const sizeCell = document.createElement("td");
+    sizeCell.textContent = item.bytesAvailable
+      ? formatBytes(item.bytes)
+      : "Unavailable";
+    sizeCell.style.whiteSpace = "nowrap";
+
+    const actionCell = document.createElement("td");
+    actionCell.className = "action-buttons";
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "btn-delete";
+    deleteBtn.textContent = "Delete";
+    deleteBtn.onclick = () => showDeleteConfirmModal(folder);
+
+    const describeBtn = document.createElement("button");
+    describeBtn.className = "btn-describe";
+    describeBtn.textContent = "✨ Analyze";
+    describeBtn.onclick = () => describeProject(folder);
+
+    const openBtn = document.createElement("button");
+    openBtn.className = "btn-open";
+    openBtn.textContent = "📁 Open";
+    openBtn.onclick = () => openProjectFolder(folder);
+
+    actionCell.appendChild(deleteBtn);
+    actionCell.appendChild(openBtn);
+    actionCell.appendChild(describeBtn);
+
+    row.appendChild(pathCell);
+    row.appendChild(sizeCell);
+    row.appendChild(actionCell);
+
+    return row;
+  }
 })();
