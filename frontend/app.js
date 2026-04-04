@@ -491,7 +491,7 @@
     deleteConfirmModal.classList.add("hidden");
     deleteConfirmBody.textContent = "";
   }
-  
+
   function selectFolderFallback() {
     return new Promise((resolve) => {
       const input = document.createElement("input");
@@ -516,4 +516,43 @@
       input.click();
     });
   }
+
+  function getSelectedTypeKeys() {
+    return new Set(
+      typeFilterCheckboxes
+        .filter((checkbox) => checkbox.checked)
+        .map((checkbox) => checkbox.value),
+    );
+  }
+
+  function sortItems(items) {
+    const sortBy = sortBySelect.value;
+
+    if (!sortBy) {
+      return items;
+    }
+
+    const sorted = [...items];
+
+    sorted.sort((left, right) => {
+      if (sortBy === "size_desc") {
+        return right.bytes - left.bytes;
+      }
+
+      if (sortBy === "created_asc") {
+        return toTimeValue(left.createdAtIso) - toTimeValue(right.createdAtIso);
+      }
+
+      if (sortBy === "modified_asc") {
+        return (
+          toTimeValue(left.modifiedAtIso) - toTimeValue(right.modifiedAtIso)
+        );
+      }
+
+      return 0;
+    });
+
+    return sorted;
+  }
+
 })();
