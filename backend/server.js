@@ -284,5 +284,95 @@ app.post("/delete", async (req, res) => {
 });
 
 
+app.post("/describe", async (req, res) => {
+  const { folder, model: requestedModel } = req.body;
+
+  if (!folder || typeof folder !== "string") {
+    return res.status(400).json({ error: "Missing folder path" });
+  }
+
+  try {
+    const analysisRoot = toProjectRoot(folder);
+    const projectStats = fs.statSync(analysisRoot);
+    const projectName = path.basename(analysisRoot);
+    const createdAt = projectStats.birthtime
+      ? projectStats.birthtime.toISOString()
+      : null;
+    const lastModifiedAt = projectStats.mtime
+      ? projectStats.mtime.toISOString()
+      : null;
+    const projectSizeBytes = getFolderSizeBytes(analysisRoot);
+    const projectSizeReadable = formatBytes(projectSizeBytes);
+
+    const { text: projectText, tags: detectedTags } =
+      readProjectFiles(analysisRoot);
+
+    if (!projectText || !projectText.trim()) {
+      return res.status(400).json({
+        error:
+          "No analyzable project files found (README, package.json, pyproject.toml, requirements.txt, pom.xml, build.gradle, etc.)",
+      });
+    }
+
+    const prompt = `You are an expert software analyst. Read the following project metadata (README and package.json summary) and provide a short plain-language summary about the project.
+
+STRICT OUTPUT RULES:
+- Do NOT include any code snippets.
+- Do NOT include markdown code blocks.
+- Do NOT quote file contents.
+- Keep it concise and beginner-friendly.
+- Do NOT repeat project name, created date, last modified date, project size, or tags.
+- Do NOT add a "Project metadata" section or any other metadata summary.
+- Use exactly these three numbered sections, each on its own line:
+1) What this project is for: ...
+2) How it works at a high level: ...
+3) Main technologies/frameworks: ...
+- Keep each section short and easy to scan.
+
+Include only:
+1) What this project is for
+2) How it works at a high level
+3) Main technologies/frameworks 
+
+PROJECT INFO:
+- Project name: ${projectName}
+- Created date: ${createdAt || "Unknown"}
+- Last modified date: ${lastModifiedAt || "Unknown"}
+- Project size: ${projectSizeReadable} (${projectSizeBytes} bytes)
+- Tags: ${detectedTags.length ? detectedTags.join(", ") : "unknown"}
+
+PROJECT METADATA:
+${projectText}`;
+
+    const { response: aiText, modelUsed } = await generateProjectSummary(
+      prompt,
+      requestedModel,
+    );
+
+    const description = sanitizeDescription(aiText);
+
+    return res.json({
+      description,
+      modelUsed,
+      projectMeta: {
+        projectName,
+        createdAt,
+        lastModifiedAt,
+        projectSizeBytes,
+        projectSizeReadable,
+        tags: detectedTags,
+      },
+    });
+  } catch (error) {
+    const details =
+      error?.response?.data?.error ||
+      error?.message ||
+      "Unknown AI analysis failure";
+
+    return res.status(500).json({ error: `AI analysis failed: ${details}` });
+  }
+});
+
+
 const PORT = 3001;
 app.listen(PORT, () => console.log("Backend running on port", PORT));
